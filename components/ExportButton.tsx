@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import type { CheckStatusResponse, RequestIdResponse } from "@/types/export";
 
 export const ExportButton = () => {
   const [isExporting, setIsExporting] = useState(false);
@@ -14,7 +15,7 @@ export const ExportButton = () => {
     try {
       // エクスポート ID の取得
       const exportResponse = await fetch("/api/requestId");
-      const { exportId } = await exportResponse.json();
+      const { exportId } = (await exportResponse.json()) as RequestIdResponse;
 
       // ステータス確認のポーリング
       let isCompleted = false;
@@ -22,12 +23,14 @@ export const ExportButton = () => {
         const statusResponse = await fetch(
           `/api/checkStatus?exportId=${exportId}`,
         );
-        const status = await statusResponse.json();
+        const status = (await statusResponse.json()) as CheckStatusResponse;
 
         if (status.isCompleted) {
           isCompleted = true;
           // ダウンロード URL が利用可能になったらファイルをダウンロード
-          window.location.href = status.downloadUrl;
+          if (status.downloadUrl) {
+            window.location.href = status.downloadUrl;
+          }
         } else {
           // プログレスバーの更新（この例では 33% ずつ増加）
           setProgress((prev) => Math.min(prev + 33, 99));

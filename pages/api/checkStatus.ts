@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import dayjs from "dayjs";
+import type { CheckStatusResponse } from "@/types/export";
 
 // 進行中のエクスポートを管理するオブジェクト
 const inProgressExports: { [key: string]: number } = {};
@@ -11,7 +12,10 @@ const inProgressExports: { [key: string]: number } = {};
  * @param res - Next.js の API レスポンスオブジェクト
  * @returns エクスポートの進行状況を含む JSON レスポンス
  */
-export default function checkStatus(req: NextApiRequest, res: NextApiResponse) {
+export default function checkStatus(
+  req: NextApiRequest,
+  res: NextApiResponse<CheckStatusResponse | { error: string }>,
+) {
   const { exportId } = req.query;
 
   // exportId が文字列でない場合はエラーレスポンスを返す
