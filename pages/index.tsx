@@ -23,7 +23,7 @@ const geistMono = localFont({
 });
 
 export default function Home() {
-  const { progress, isExporting } = useExport();
+  const { progress, isExporting, startExport } = useExport();
 
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} relative`}>
@@ -43,7 +43,7 @@ export default function Home() {
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex justify-end">
-            <ExportButton />
+            <ExportButton isExporting={isExporting} startExport={startExport} />
           </CardFooter>
         </Card>
       </div>
